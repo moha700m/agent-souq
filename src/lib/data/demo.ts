@@ -1,0 +1,25 @@
+import type { Agent, Category, Profile, Review } from "@/types/domain";
+export const demoCategories: Category[] = [
+  ["coding","Coding","Build, debug, and ship software faster.","Code2"], ["business","Business","Strategy, analysis, and smarter operations.","Briefcase"], ["marketing","Marketing","Campaigns, content, positioning, and growth.","Megaphone"], ["research","Research","Evidence-backed answers and clear synthesis.","Telescope"], ["customer-support","Customer support","Helpful and consistent customer experiences.","MessagesSquare"], ["automation","Automation","Connect tools and remove repetitive work.","Workflow"], ["productivity","Productivity","Plan, focus, and get important work done.","ListChecks"],
+].map(([slug,name,description,icon], i) => ({ id: `10000000-0000-4000-8000-00000000000${i+1}`, slug, name, description, icon, agentCount: 1 }));
+export const demoProfiles: Profile[] = [
+  { id:"20000000-0000-4000-8000-000000000001",username:"maya_chen",fullName:"Maya Chen",bio:"I build practical agents for focused teams.",avatarUrl:null,websiteUrl:null,role:"creator",isVerified:true,onboardingCompleted:true,createdAt:"2025-01-10T09:00:00Z" },
+  { id:"20000000-0000-4000-8000-000000000002",username:"omar_builds",fullName:"Omar Alharbi",bio:"Automation and operations systems.",avatarUrl:null,websiteUrl:null,role:"creator",isVerified:false,onboardingCompleted:true,createdAt:"2025-02-04T09:00:00Z" },
+  { id:"20000000-0000-4000-8000-000000000003",username:"demo_member",fullName:"Demo Member",bio:"A read-only workspace preview.",avatarUrl:null,websiteUrl:null,role:"member",isVerified:false,onboardingCompleted:true,createdAt:"2025-02-10T09:00:00Z" },
+];
+const creator = (i:number) => { const p=demoProfiles[i]; return {id:p.id,username:p.username,fullName:p.fullName,avatarUrl:p.avatarUrl,isVerified:p.isVerified}; };
+const cat = (i:number) => { const c=demoCategories[i]; return {id:c.id,slug:c.slug,name:c.name,icon:c.icon}; };
+const rows = [
+  ["code-compass","Code Compass","Turn fuzzy product ideas into reviewed, production-minded code plans.",0,0,"one_time",2900,"architecture,review,typescript","codebase analysis,implementation planning,security review","1515879218367-8466d910aaa4"],
+  ["market-signal","Market Signal","Find the customer signals that matter before your next business decision.",1,0,"subscription",1900,"analysis,founders,strategy","competitor analysis,decision memos,market mapping","1551288049-bebda4e38f71"],
+  ["campaign-craft","Campaign Craft","Build coherent campaigns from positioning through channel-ready copy.",2,1,"free",0,"campaigns,content,growth","campaign strategy,channel copy,content calendars","1533750349088-cd871a92f312"],
+  ["research-scout","Research Scout","Synthesize credible sources into concise, citation-ready research briefs.",3,0,"one_time",1500,"citations,evidence,synthesis","research planning,source synthesis,uncertainty flags","1456324504439-367cee3b3c32"],
+  ["support-desk","Support Desk","Draft consistent, empathetic answers grounded in your support policy.",4,1,"subscription",1200,"cx,support,triage","escalation guidance,response drafting,ticket triage","1556761175-b413da4e38f71"],
+  ["flow-architect","Flow Architect","Design reliable automations with clear triggers, safeguards, and recovery paths.",5,1,"one_time",3900,"n8n,operations,workflows","failure handling,implementation specs,workflow mapping","1518432031352-d6fc5c10da5a"],
+  ["focus-pilot","Focus Pilot","Turn competing priorities into a realistic plan you can actually finish.",6,0,"free",0,"focus,planning,priorities","priority setting,task breakdown,weekly planning","1484480974693-6ca0a78fb36b"],
+] as const;
+export const demoAgents: Agent[] = rows.map((r,i) => {
+  const id=`30000000-0000-4000-8000-00000000000${i+1}`;
+  const review: Review = { id:`40000000-0000-4000-8000-00000000000${i+1}`,agentId:id,rating:i===1?4:5,title:"A useful, focused workflow",body:"The agent made its assumptions clear and produced a result our team could review with confidence.",reviewer:creator(2),createdAt:"2026-05-20T09:00:00Z",updatedAt:"2026-05-20T09:00:00Z" };
+  return { id,slug:r[0],name:r[1],tagline:r[2],description:`${r[1]} is a focused AI workflow designed for real teams. It structures the work, makes assumptions visible, and produces practical outputs that remain easy for a human to review before use.`,instructions:"Describe the outcome, relevant context, constraints, and source material. Review important claims and decisions before acting on the output.",category:cat(r[3]),creator:creator(r[4]),tags:r[7].split(","),capabilities:r[8].split(","),priceType:r[5],priceCents:r[6],currency:"USD",thumbnailUrl:`https://images.unsplash.com/photo-${r[9]}?auto=format&fit=crop&w=1200&q=80`,galleryUrls:[`https://images.unsplash.com/photo-${r[9]}?auto=format&fit=crop&w=1600&q=80`],demoUrl:null,version:"1.0.0",status:"published",averageRating:i<3?review.rating:4.8,reviewCount:i<3?1:12+i,favoriteCount:300+i*91,installCount:180+i*73,viewCount:1000+i*367,publishedAt:`2026-0${(i%6)+1}-12T09:00:00Z`,updatedAt:"2026-06-12T09:00:00Z",reviews:i<3?[review]:[] };
+});

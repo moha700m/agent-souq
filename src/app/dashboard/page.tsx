@@ -1,0 +1,10 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Clock3, Heart, PackageCheck, Star } from "lucide-react";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { StatCard } from "@/components/dashboard/stat-card";
+import { AgentCard } from "@/components/agent-card";
+import { buttonVariants } from "@/components/ui/button";
+import { getDashboardData } from "@/lib/data/dashboard";
+export const metadata:Metadata={title:"Dashboard",robots:{index:false,follow:false}};
+export default async function DashboardPage(){const data=await getDashboardData();const recommendations=[...data.recent,...data.favorites,...data.installations].filter((a,i,all)=>all.findIndex(x=>x.id===a.id)===i).slice(0,3);return <><DashboardHeader eyebrow="Your workspace" title={`Good to see you, ${data.profile.fullName.split(" ")[0]}.`} description="Everything you saved, tried, and reviewed—kept in one calm place." readOnly={data.readOnly} action={<Link href="/agents" className={buttonVariants()}>Explore marketplace</Link>}/><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><StatCard label="Saved agents" value={data.favorites.length} icon={Heart}/><StatCard label="In your library" value={data.installations.length} icon={PackageCheck}/><StatCard label="Recently viewed" value={data.recent.length} icon={Clock3}/><StatCard label="Your reviews" value={data.reviews.length} icon={Star}/></div><section className="mt-10"><div className="mb-5 flex items-end justify-between"><div><h2 className="text-xl font-bold">Continue exploring</h2><p className="mt-1 text-sm text-muted-foreground">A quick return to agents on your radar.</p></div><Link href="/dashboard/recent" className={buttonVariants({variant:"ghost",size:"sm"})}>View activity</Link></div><div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">{recommendations.map(agent=><AgentCard key={agent.id} agent={agent}/>)}{recommendations.length===0&&<div className="col-span-full rounded-2xl border border-dashed p-10 text-center text-sm text-muted-foreground">Your activity will appear here after you explore the marketplace.</div>}</div></section></>}

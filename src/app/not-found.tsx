@@ -1,0 +1,4 @@
+import Link from "next/link";
+import { Compass } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+export default function NotFound(){return <div className="container-shell grid min-h-[60vh] place-items-center py-20 text-center"><div><span className="mx-auto mb-5 grid size-16 place-items-center rounded-3xl bg-secondary text-primary"><Compass className="size-7"/></span><p className="font-mono text-xs text-muted-foreground">404 · STALL NOT FOUND</p><h1 className="mt-3 text-4xl font-bold tracking-[-.04em]">This corner of the souq is empty.</h1><p className="mt-3 text-muted-foreground">The page may have moved, or the listing is no longer public.</p><div className="mt-7 flex justify-center gap-3"><Link href="/agents" className={buttonVariants()}>Explore agents</Link><Link href="/" className={buttonVariants({variant:"outline"})}>Go home</Link></div></div></div>}

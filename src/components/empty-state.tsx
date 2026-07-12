@@ -1,0 +1,4 @@
+import Link from "next/link";
+import { PackageOpen } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+export function EmptyState({ title, description, href, action }: { title: string; description: string; href?: string; action?: string }) { return <div className="col-span-full grid min-h-64 place-items-center rounded-2xl border border-dashed bg-card/45 p-8 text-center"><div><span className="mx-auto mb-4 grid size-12 place-items-center rounded-2xl bg-muted"><PackageOpen className="size-5 text-muted-foreground" aria-hidden="true"/></span><h3 className="font-bold">{title}</h3><p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">{description}</p>{href && action && <Link href={href} className={`${buttonVariants({ variant: "outline", size: "sm" })} mt-5`}>{action}</Link>}</div></div>; }

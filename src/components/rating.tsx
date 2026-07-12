@@ -1,0 +1,3 @@
+import { Star } from "lucide-react";
+import { cn } from "@/lib/utils";
+export function Rating({ value, count, compact = false, className }: { value: number; count?: number; compact?: boolean; className?: string }) { return <span className={cn("inline-flex items-center gap-1 text-sm", className)} aria-label={`${value.toFixed(1)} out of 5${count !== undefined ? ` from ${count} reviews` : ""}`}><Star className="size-4 fill-amber-400 text-amber-500" aria-hidden="true"/><strong>{value ? value.toFixed(1) : "New"}</strong>{!compact && count !== undefined && <span className="text-muted-foreground">({count})</span>}</span>; }

@@ -1,0 +1,13 @@
+"use server";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { failedAction, type ActionState, AppError } from "@/lib/errors";
+import { forgotSchema, passwordSchema, signInSchema, signUpSchema } from "@/lib/validation";
+import { getSiteUrl } from "@/lib/env";
+import { safeRedirectPath } from "@/lib/urls";
+const values=(f:FormData)=>Object.fromEntries(f.entries());
+export async function signInAction(_:ActionState,f:FormData):Promise<ActionState>{let next="/dashboard";try{const p=signInSchema.parse(values(f));next=safeRedirectPath(p.next);const s=await createClient();const{error}=await s.auth.signInWithPassword({email:p.email,password:p.password});if(error)throw new AppError("UNAUTHENTICATED","Email or password is incorrect.",401);}catch(e){return failedAction(e)}redirect(next);}
+export async function signUpAction(_:ActionState<{next:string}>,f:FormData):Promise<ActionState<{next:string}>>{try{const p=signUpSchema.parse(values(f));const s=await createClient(),callback=new URL("/auth/callback",getSiteUrl());callback.searchParams.set("next","/onboarding");const{data,error}=await s.auth.signUp({email:p.email,password:p.password,options:{emailRedirectTo:callback.toString(),data:{full_name:p.fullName}}});if(error)throw new AppError("BAD_REQUEST","Your account could not be created. Check the details and try again.",400);return{ok:true,message:data.session?"Account created. Continue to onboarding.":"If this email can be registered, check your inbox to continue.",data:data.session?{next:"/onboarding"}:undefined};}catch(e){return failedAction(e)}}
+export async function forgotAction(_:ActionState,f:FormData):Promise<ActionState>{try{const p=forgotSchema.parse(values(f)),s=await createClient(),callback=new URL("/auth/callback",getSiteUrl());callback.searchParams.set("next","/auth/update-password");await s.auth.resetPasswordForEmail(p.email,{redirectTo:callback.toString()});return{ok:true,message:"If an account exists for that email, a reset link is on its way."};}catch(e){return failedAction(e)}}
+export async function updatePasswordAction(_:ActionState,f:FormData):Promise<ActionState>{try{const p=passwordSchema.parse(values(f)),s=await createClient();const{error}=await s.auth.updateUser({password:p.password});if(error)throw new AppError("UNAUTHENTICATED","Your reset session expired. Request a new link.",401);return{ok:true,message:"Password updated. You can continue securely."};}catch(e){return failedAction(e)}}
+export async function signOutAction(){const s=await createClient();await s.auth.signOut();redirect("/");}
